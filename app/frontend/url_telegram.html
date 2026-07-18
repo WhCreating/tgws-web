@@ -5,8 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tg-Ws Proxy Web</title>
-  <!-- Подключаем внешний CSS -->
-  <link rel="stylesheet" href="static/styles.css" />
+  <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}" />
 </head>
 <body>
   <div class="container">
@@ -14,22 +13,36 @@
       <h1>📋 Скопируйте текст</h1>
       <p class="sub">Нажмите на кнопку справа, чтобы скопировать содержимое.</p>
 
-      <div class="copy-box" id="copyBox">
-        <!-- 
-          ★ ДЛЯ JINJA: замените текст внутри span на {{ text_to_copy }}
-          Например: <span class="text-content" id="textToCopy">{{ text_to_copy }}</span>
-        -->
-        <span class="text-content" id="textToCopy">
-          Здесь статический текст для копирования. При интеграции с Jinja передавайте сюда переменную.
-        </span>
-        <button class="copy-btn" id="copyBtn" aria-label="Копировать текст">📄</button>
+      <!-- Блок с основным URL (оставляем как есть) -->
+      <div class="copy-box">
+        <span class="text-content" id="textToCopy">{{ url_proxy }}</span>
+        <button class="copy-btn" data-target="textToCopy" aria-label="Копировать текст">📄</button>
+      </div>
+
+      <!-- ★ Доработанные строки с параметрами: каждая в одной строке -->
+      <div class="display-lines">
+        <div class="param-line">
+          <span class="label">Сервер:</span>
+          <span class="value">{{ server }}</span>
+          <button class="copy-btn" data-target="value" aria-label="Копировать сервер">📄</button>
+        </div>
+        <div class="param-line">
+          <span class="label">Порт:</span>
+          <span class="value">{{ port }}</span>
+          <button class="copy-btn" data-target="value" aria-label="Копировать порт">📄</button>
+        </div>
+        <div class="param-line">
+          <span class="label">Секрет:</span>
+          <span class="value">{{ secret }}</span>
+          <button class="copy-btn" data-target="value" aria-label="Копировать секрет">📄</button>
+        </div>
       </div>
 
       <div class="copy-feedback" id="copyFeedback">✅ Скопировано!</div>
 
       <div class="mt-2">
         <p style="color: var(--text-secondary); font-size: 0.9rem;">
-          <small>Текст для копирования статический (замените на переменную Jinja).</small>
+          <small>nn-team @ <a href="https://github.com/WhCreating/tgws-web">TgWs Web Interface</a></small>
         </p>
       </div>
     </div>
@@ -37,34 +50,9 @@
 
   <script>
     (function() {
-      const copyBtn = document.getElementById('copyBtn');
-      const textElement = document.getElementById('textToCopy');
       const feedback = document.getElementById('copyFeedback');
 
-      async function copyText() {
-        const text = textElement.textContent.trim();
-        if (!text) return;
-
-        try {
-          await navigator.clipboard.writeText(text);
-          showFeedback('✅ Скопировано!');
-        } catch (err) {
-          // fallback для старых браузеров
-          try {
-            const range = document.createRange();
-            range.selectNodeContents(textElement);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            document.execCommand('copy');
-            selection.removeAllRanges();
-            showFeedback('✅ Скопировано!');
-          } catch (e) {
-            showFeedback('❌ Не удалось скопировать');
-          }
-        }
-      }
-
+      // Функция показа уведомления
       function showFeedback(msg) {
         feedback.textContent = msg;
         feedback.classList.add('show');
@@ -73,7 +61,56 @@
         }, 2500);
       }
 
-      copyBtn.addEventListener('click', copyText);
+      // Функция копирования текста
+      async function copyText(text) {
+        if (!text) return;
+        try {
+          await navigator.clipboard.writeText(text);
+          showFeedback('✅ Скопировано!');
+        } catch (err) {
+          // fallback
+          const textarea = document.createElement('textarea');
+          textarea.value = text;
+          document.body.appendChild(textarea);
+          textarea.select();
+          try {
+            document.execCommand('copy');
+            showFeedback('✅ Скопировано!');
+          } catch (e) {
+            showFeedback('❌ Не удалось скопировать');
+          }
+          document.body.removeChild(textarea);
+        }
+      }
+
+      // Находим все кнопки с классом copy-btn
+      document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          const target = this.getAttribute('data-target');
+          let text = '';
+
+          if (target === 'textToCopy') {
+            // Копируем текст из элемента с id="textToCopy"
+            const el = document.getElementById('textToCopy');
+            if (el) text = el.textContent.trim();
+          } else if (target === 'value') {
+            // Ищем ближайший родительский .param-line, внутри него .value
+            const line = this.closest('.param-line');
+            if (line) {
+              const valueEl = line.querySelector('.value');
+              if (valueEl) text = valueEl.textContent.trim();
+            }
+          }
+
+          if (text) {
+            copyText(text);
+          } else {
+            showFeedback('❌ Нет данных для копирования');
+          }
+        });
+      });
+
     })();
   </script>
 </body>

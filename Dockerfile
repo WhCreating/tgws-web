@@ -1,5 +1,7 @@
 FROM python:3.14.6-alpine
 
+RUN apk add --no-cache docker-cli
+
 WORKDIR /app
 
 COPY requirements.txt .

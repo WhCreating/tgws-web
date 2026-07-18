@@ -234,3 +234,23 @@ p.sub {
     font-size: 0.95rem;
   }
 }
+
+.display-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+.line {
+  display: flex;
+  gap: 0.5rem;
+}
+.line .label {
+  font-weight: 500;
+  color: var(--text-secondary);
+  min-width: 70px;
+}
+.line .value {
+  color: var(--text);
+  word-break: break-all;
+}
