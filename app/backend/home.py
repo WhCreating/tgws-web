@@ -8,7 +8,6 @@ from logic.logic_tgws import get_proxy_url, TypeReturn
 
 router = APIRouter()
 
-router.mount("/app", StaticFiles(directory="frontend/static"), name="static")
 templates = Jinja2Templates(directory="frontend")
 
 @router.get("/")

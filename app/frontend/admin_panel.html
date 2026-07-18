@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tg-Ws Proxy Admin</title>
-<link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}" />
 </head>
 <body>
   <div class="container">
@@ -15,18 +15,36 @@
 
       <div class="form-group">
         <label for="inputField">Пароль:</label>
-        <!-- 
-          ★ ДЛЯ JINJA: замените value на {{ default_value }}
-          Например: <input type="text" id="inputField" value="{{ default_value }}" placeholder="Введите что-нибудь...">
-        -->
-        <input type="password" id="inputField" value="" placeholder="Введите пароль от админ-панели" />
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <!-- ★ Сюда я добавил все стили прямо в тег -->
+          <input 
+            type="password" 
+            id="inputField" 
+            value="" 
+            placeholder="Введите пароль от админ-панели" 
+            style="
+              flex: 1; 
+              padding: 0.8rem 1rem; 
+              font-size: 1rem; 
+              border: 1px solid #e2e8f0; 
+              border-radius: 10px; 
+              background: #f8fafc; 
+              font-family: inherit; 
+              color: #0f172a; 
+              transition: border-color 0.2s, box-shadow 0.2s; 
+              outline: none;
+            "
+            onfocus="this.style.borderColor='#4f46e5'; this.style.boxShadow='0 0 0 3px rgba(79,70,229,0.15)';"
+            onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';"
+          />
+          <button type="button" id="togglePassword" class="btn btn-secondary" style="padding: 0.7rem 1rem; flex-shrink: 0;">
+            👁️
+          </button>
+        </div>
       </div>
 
       <div class="actions">
-        <!-- Кнопка "Сохранить" для демонстрации (просто alert) -->
         <button class="btn" id="saveBtn">Перезапустить прокси</button>
-        <!-- Кнопка перезапуска (сброс) -->
-        <!-- button class="btn btn-secondary" id="resetBtn">Перезапустить</button> -->
       </div>
 
       <div class="mt-2">
@@ -40,32 +58,17 @@
   <script>
     (function() {
       const inputField = document.getElementById('inputField');
-      const resetBtn = document.getElementById('resetBtn');
       const saveBtn = document.getElementById('saveBtn');
-      const defaultDisplay = document.getElementById('defaultDisplay');
+      const toggleBtn = document.getElementById('togglePassword');
 
-      // Сохраняем начальное значение (из атрибута value)
-      const defaultValue = inputField.value;
 
-      // Отображаем его в подписи
-      defaultDisplay.textContent = defaultValue;
-
-      // Перезапустить = сбросить поле до defaultValue
-      resetBtn.addEventListener('click', function() {
-        inputField.value = defaultValue;
-        // Можно также вызвать событие change, если нужно
-        inputField.dispatchEvent(new Event('change'));
+      // Переключение видимости пароля
+      toggleBtn.addEventListener('click', function() {
+        const isPassword = inputField.getAttribute('type') === 'password';
+        inputField.setAttribute('type', isPassword ? 'text' : 'password');
+        toggleBtn.textContent = isPassword ? '🙈' : '👁️';
+        toggleBtn.setAttribute('aria-label', isPassword ? 'Скрыть пароль' : 'Показать пароль');
       });
-
-      // Кнопка "Сохранить" – просто имитация сохранения (alert)
-      saveBtn.addEventListener('click', function() {
-        const currentValue = inputField.value.trim() || '(пусто)';
-        alert('Сохранено значение: ' + currentValue);
-        // Здесь вы можете отправить данные на сервер через fetch, если нужно
-      });
-
-      // Дополнительно: обновляем отображение дефолтного значения, если оно изменилось (например, после сохранения)
-      // Но для простоты оставляем статическим.
     })();
   </script>
 </body>
