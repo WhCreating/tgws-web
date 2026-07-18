@@ -1,0 +1,72 @@
+<!-- reset_page.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tg-Ws Proxy Admin</title>
+  <link rel="stylesheet" href="static/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>🔄 Админ-Панель от Tg-Ws Web</h1>
+      <p class="sub">Введите пароль и выберите действие.</p>
+
+      <div class="form-group">
+        <label for="inputField">Пароль:</label>
+        <!-- 
+          ★ ДЛЯ JINJA: замените value на {{ default_value }}
+          Например: <input type="text" id="inputField" value="{{ default_value }}" placeholder="Введите что-нибудь...">
+        -->
+        <input type="password" id="inputField" value="" placeholder="Введите пароль от админ-панели" />
+      </div>
+
+      <div class="actions">
+        <!-- Кнопка "Сохранить" для демонстрации (просто alert) -->
+        <button class="btn" id="saveBtn">Перезапустить прокси</button>
+        <!-- Кнопка перезапуска (сброс) -->
+        <!-- button class="btn btn-secondary" id="resetBtn">Перезапустить</button> -->
+      </div>
+
+      <div class="mt-2">
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+          <small>nn-team @ <a href="https://github.com/WhCreating/tgws-web">TgWs Web Interface</a></small>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const inputField = document.getElementById('inputField');
+      const resetBtn = document.getElementById('resetBtn');
+      const saveBtn = document.getElementById('saveBtn');
+      const defaultDisplay = document.getElementById('defaultDisplay');
+
+      // Сохраняем начальное значение (из атрибута value)
+      const defaultValue = inputField.value;
+
+      // Отображаем его в подписи
+      defaultDisplay.textContent = defaultValue;
+
+      // Перезапустить = сбросить поле до defaultValue
+      resetBtn.addEventListener('click', function() {
+        inputField.value = defaultValue;
+        // Можно также вызвать событие change, если нужно
+        inputField.dispatchEvent(new Event('change'));
+      });
+
+      // Кнопка "Сохранить" – просто имитация сохранения (alert)
+      saveBtn.addEventListener('click', function() {
+        const currentValue = inputField.value.trim() || '(пусто)';
+        alert('Сохранено значение: ' + currentValue);
+        // Здесь вы можете отправить данные на сервер через fetch, если нужно
+      });
+
+      // Дополнительно: обновляем отображение дефолтного значения, если оно изменилось (например, после сохранения)
+      // Но для простоты оставляем статическим.
+    })();
+  </script>
+</body>
+</html>

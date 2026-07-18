@@ -1,0 +1,80 @@
+<!-- copy_text.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tg-Ws Proxy Web</title>
+  <!-- Подключаем внешний CSS -->
+  <link rel="stylesheet" href="static/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>📋 Скопируйте текст</h1>
+      <p class="sub">Нажмите на кнопку справа, чтобы скопировать содержимое.</p>
+
+      <div class="copy-box" id="copyBox">
+        <!-- 
+          ★ ДЛЯ JINJA: замените текст внутри span на {{ text_to_copy }}
+          Например: <span class="text-content" id="textToCopy">{{ text_to_copy }}</span>
+        -->
+        <span class="text-content" id="textToCopy">
+          Здесь статический текст для копирования. При интеграции с Jinja передавайте сюда переменную.
+        </span>
+        <button class="copy-btn" id="copyBtn" aria-label="Копировать текст">📄</button>
+      </div>
+
+      <div class="copy-feedback" id="copyFeedback">✅ Скопировано!</div>
+
+      <div class="mt-2">
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+          <small>Текст для копирования статический (замените на переменную Jinja).</small>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const copyBtn = document.getElementById('copyBtn');
+      const textElement = document.getElementById('textToCopy');
+      const feedback = document.getElementById('copyFeedback');
+
+      async function copyText() {
+        const text = textElement.textContent.trim();
+        if (!text) return;
+
+        try {
+          await navigator.clipboard.writeText(text);
+          showFeedback('✅ Скопировано!');
+        } catch (err) {
+          // fallback для старых браузеров
+          try {
+            const range = document.createRange();
+            range.selectNodeContents(textElement);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            document.execCommand('copy');
+            selection.removeAllRanges();
+            showFeedback('✅ Скопировано!');
+          } catch (e) {
+            showFeedback('❌ Не удалось скопировать');
+          }
+        }
+      }
+
+      function showFeedback(msg) {
+        feedback.textContent = msg;
+        feedback.classList.add('show');
+        setTimeout(() => {
+          feedback.classList.remove('show');
+        }, 2500);
+      }
+
+      copyBtn.addEventListener('click', copyText);
+    })();
+  </script>
+</body>
+</html>
