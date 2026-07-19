@@ -3,16 +3,23 @@ from os.path import join
 
 from enum import Enum
 
-docker = DockerClient(compose_files=[join("docker-compose.yml")])
+from logic.logic_back import my_password
+
+docker = DockerClient(compose_files=[join("..", "docker-compose.yml")])
 
 
 
-def restart_tgws() -> str:
+def restart_tgws(password: str) -> bool:
     try :
-        docker.compose.down(services=["tg-ws-proxy"])
-        docker.compose.up(services=["tg-ws-proxy"], detach=True)
+        is_pass = my_password(password)
+        print(is_pass)
+        if is_pass:
+            docker.compose.down(services=["tg-ws-proxy"])
+            docker.compose.up(services=["tg-ws-proxy"], detach=True)
+            return True
     except Exception as e:
-        return str(e)
+        print(e)
+        return False
 
 class TypeReturn:
     SERVER = "server"

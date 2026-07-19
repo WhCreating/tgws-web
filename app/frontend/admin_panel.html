@@ -14,12 +14,12 @@
       <p class="sub">Введите пароль и выберите действие.</p>
 
       <div class="form-group">
-        <label for="inputField">Пароль:</label>
+        <label for="inputPassword">Пароль:</label>
         <div style="display: flex; align-items: center; gap: 0.5rem;">
           <!-- ★ Сюда я добавил все стили прямо в тег -->
           <input 
             type="password" 
-            id="inputField" 
+            id="inputPassword" 
             value="" 
             placeholder="Введите пароль от админ-панели" 
             style="
@@ -44,7 +44,7 @@
       </div>
 
       <div class="actions">
-        <button class="btn" id="saveBtn">Перезапустить прокси</button>
+        <button class="btn" id="saveBtn" onclick="restart_proxy()">Перезапустить прокси</button>
       </div>
 
       <div class="mt-2">
@@ -57,7 +57,7 @@
 
   <script>
     (function() {
-      const inputField = document.getElementById('inputField');
+      const inputField = document.getElementById('inputPassword');
       const saveBtn = document.getElementById('saveBtn');
       const toggleBtn = document.getElementById('togglePassword');
 
@@ -70,6 +70,17 @@
         toggleBtn.setAttribute('aria-label', isPassword ? 'Скрыть пароль' : 'Показать пароль');
       });
     })();
+
+    async function restart_proxy() {
+      const inputPassword = document.getElementById("inputPassword");
+      var res = await fetch(`/restart-proxy/${inputPassword.value}`, { method: 'POST'});
+      
+      if (res.ok){
+        alert(`${res.status}: Прокси успешно перезапущен`)
+      } else {
+        alert(`${res.status}: Неправильный пароль`)
+      }
+    }
   </script>
 </body>
 </html>
