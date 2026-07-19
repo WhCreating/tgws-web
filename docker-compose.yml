@@ -34,8 +34,6 @@ services:
         max-size: "10m"
         max-file: "5"
         compress: "true"
-    env_file:
-      - .env
     build:
       context: .
       dockerfile: Dockerfile
