@@ -1,4 +1,4 @@
-# Tg-Ws Web Interface v1.0.1
+# Tg-Ws Web Interface v1.0.2
 Локальный веб-интерфейс для tgws прокси
 
 **!ВНИМАНИЕ**: Все права принаджелат оригинальному автору: ![Flowseal tg-ws-proxy](https://github.com/Flowseal/tg-ws-proxy)
