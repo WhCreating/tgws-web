@@ -5,7 +5,14 @@ from enum import Enum
 
 from logic.logic_back import my_password
 
-docker = DockerClient(compose_files=[join("..", "docker-compose.yml")])
+from pathlib import Path
+
+LOGIC_DIR = Path(__file__).parent.resolve()
+
+COMPOSE_FILE_PATH = LOGIC_DIR.parent.parent
+
+
+docker = DockerClient(compose_files=[join(COMPOSE_FILE_PATH, "docker-compose.yml")])
 
 
 
